@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>boothy91 ~ projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #33ff66;
+    --green-dim: #1a8c38;
+    --green-faint: #0d3d1a;
+    --bg: #020a04;
+  }
+
+  html { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Scanlines */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.18) 0px,
+      rgba(0,0,0,0.18) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.75) 100%);
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.82; }
+    97% { opacity: 0.96; }
+    98% { opacity: 0.88; }
+  }
+
+  .screen {
+    animation: flicker 10s infinite;
+    min-height: 100vh;
+    padding: 32px 28px 80px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  .dim    { color: var(--green-dim); }
+  .faint  { color: #1d5c2e; }
+  .bright { color: var(--green); text-shadow: 0 0 8px var(--green), 0 0 2px var(--green); }
+  .white  { color: #e0e0e0; }
+  .muted-amber { color: #806030; }
+
+  .prompt-sym { color: var(--green-dim); }
+
+  .hostname {
+    font-family: 'VT323', monospace;
+    font-size: 30px;
+    color: var(--green);
+    text-shadow: 0 0 14px var(--green), 0 0 4px var(--green);
+    letter-spacing: 0.04em;
+  }
+
+  #cursor {
+    display: inline-block;
+    width: 8px;
+    height: 0.85em;
+    background: var(--green);
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: blink 0.9s step-end infinite;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--green-faint);
+    margin: 16px 0 12px;
+  }
+
+  .proj-name-line {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--green-dim);
+  }
+
+  .proj-name-line.featured-proj {
+    font-size: 34px;
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green);
+  }
+
+  .indent  { padding-left: 22px; display: block; }
+  .indent2 { padding-left: 36px; display: block; }
+
+  .tag-row { color: #1d5c2e; }
+  .tag-row span { margin-right: 6px; }
+  .tag-row span::before { content: '['; }
+  .tag-row span::after  { content: ']'; }
+
+  .link-line a {
+    color: var(--green);
+    text-decoration: none;
+  }
+  .link-line a:hover {
+    text-shadow: 0 0 8px var(--green);
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--green);
+    margin-right: 5px;
+    vertical-align: middle;
+    animation: blink 2s step-end infinite;
+  }
+
+  @media (max-width: 560px) {
+    .screen { padding: 18px 14px 60px; }
+    .hostname { font-size: 22px; }
+    .proj-name-line { font-size: 22px; }
+    .proj-name-line.featured-proj { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="screen" id="screen">
+  <span id="cursor"></span>
+</div>
+
+<script>
+const screen = document.getElementById('screen');
+const cursorEl = document.getElementById('cursor');
+
+const lines = [
+  { type: 'instant', delay: 200,  html: '<span class="dim">BIOS v2.1.4  |  RAM OK  |  GPU OK</span>' },
+  { type: 'instant', delay: 320,  html: '<span class="dim">Mounting /dev/sda1... <span class="bright">OK</span></span>' },
+  { type: 'instant', delay: 280,  html: '<span class="dim">Loading kernel modules... <span class="bright">OK</span></span>' },
+  { type: 'instant', delay: 220,  html: '<span class="dim">Starting filesystem... <span class="bright">OK</span></span>' },
+  { type: 'blank',   delay: 400 },
+  { type: 'type',    delay: 0,    speed: 55, html: '<span class="prompt-sym">root@</span><span class="hostname">boothy91</span><span class="prompt-sym">:~$ </span><span class="white">ls ./projects</span>' },
+  { type: 'blank',   delay: 300 },
+  { type: 'instant', delay: 0,    html: '<span class="dim">// 5 entries found</span>' },
+  { type: 'hr',      delay: 120 },
+
+  // WristNav
+  { type: 'type',    delay: 80,   speed: 20, html: '<span class="faint">[01]</span> <span class="proj-name-line featured-proj">WristNav</span>  <span class="bright" style="font-size:11px">★ FEATURED</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">Full Wear OS app for hiking, running &amp; cycling. Offline OSM</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">maps, GPX navigation, background GPS recording, live pace /</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">HR / elevation stats, auto-pause, lap splits, Strava export.</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">Companion phone app: plan routes, push GPX to watch, receive</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">recorded tracks &amp; upload to Strava.</span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent2 tag-row"><span>wear-os</span><span>offline-maps</span><span>gpx-nav</span><span>heart-rate</span><span>strava</span><span>java</span></span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent link-line"><span class="live-dot"></span><a href="https://boothy91.github.io/wrist-nav-site/" target="_blank">https://boothy91.github.io/wrist-nav-site/</a></span>' },
+  { type: 'blank',   delay: 200 },
+
+  // gpx-map
+  { type: 'type',    delay: 60,   speed: 20, html: '<span class="faint">[02]</span> <span class="proj-name-line">gpx-map</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">Browser-based trail planner. Click to drop waypoints, routed</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">paths via OpenRouteService, elevation profile, GPX/GeoJSON</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">export. Single HTML file — no build step, no backend.</span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent2 tag-row"><span>web</span><span>routing</span><span>elevation</span><span>gpx-export</span><span>maplibre</span></span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent link-line"><span class="live-dot"></span><a href="https://boothy91.github.io/gpx-map/" target="_blank">https://boothy91.github.io/gpx-map/</a></span>' },
+  { type: 'blank',   delay: 200 },
+
+  // FileViewer
+  { type: 'type',    delay: 60,   speed: 20, html: '<span class="faint">[03]</span> <span class="proj-name-line">FileViewer</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">Universal browser-based file inspector. 500+ formats: images,</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">video, audio, PDF, XLSX, 3D models, GPX, ZIP, hex dump.</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">All processing local — files never leave your device.</span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent2 tag-row"><span>web</span><span>500+ formats</span><span>3d-models</span><span>hex-viewer</span><span>client-side</span><span>MIT</span></span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent link-line"><span class="live-dot"></span><a href="https://boothy91.github.io/FileViewer/" target="_blank">https://boothy91.github.io/FileViewer/</a></span>' },
+  { type: 'blank',   delay: 200 },
+
+  // HikingUtility
+  { type: 'type',    delay: 60,   speed: 20, html: '<span class="faint">[04]</span> <span class="proj-name-line">HikingUtility</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">Android phone app for hiking. Live GPS tracking with distance,</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">time &amp; pace. MapLibre / MapTiler maps, GPX import/export,</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">offline map downloads. Requires MapTiler API key to build.</span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent2 tag-row"><span>android</span><span>java</span><span>kotlin</span><span>maplibre</span><span>offline-maps</span></span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent link-line"><a href="https://github.com/boothy91/HikingUtility" target="_blank">https://github.com/boothy91/HikingUtility</a>  <span class="muted-amber">[build required]</span></span>' },
+  { type: 'blank',   delay: 200 },
+
+  // offlinemaps
+  { type: 'type',    delay: 60,   speed: 20, html: '<span class="faint">[05]</span> <span class="proj-name-line">offlinemaps</span>  <span class="faint" style="font-size:11px;font-family:monospace">// fork</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">Wear OS offline maps app forked from miki151. Updated map</span>' },
+  { type: 'type',    delay: 0,    speed: 8,  html: '<span class="indent dim">colour scheme and modified the GPX track import flow.</span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent2 tag-row"><span>wear-os</span><span>java</span><span>fork</span></span>' },
+  { type: 'instant', delay: 60,   html: '<span class="indent link-line"><a href="https://github.com/boothy91/offlinemaps/raw/main/offlinemaps.apk" target="_blank">&#8595; offlinemaps.apk</a>  <span class="dim">// sideload via ADB or Bugjaeger</span></span>' },
+  { type: 'blank',   delay: 350 },
+
+  // Final prompt
+  { type: 'hr',      delay: 0 },
+  { type: 'type',    delay: 100,  speed: 55, html: '<span class="prompt-sym">root@</span><span class="hostname">boothy91</span><span class="prompt-sym">:~$ </span>' },
+];
+
+let lineIndex = 0;
+
+function addLine(html) {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  screen.insertBefore(div, cursorEl);
+  return div;
+}
+
+function addHr() {
+  const hr = document.createElement('hr');
+  hr.className = 'divider';
+  screen.insertBefore(hr, cursorEl);
+}
+
+function scrollBottom() {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function typeText(rawHtml, speed, onDone) {
+  const div = document.createElement('div');
+  screen.insertBefore(div, cursorEl);
+
+  const temp = document.createElement('div');
+  temp.innerHTML = rawHtml;
+  const fullHtml = temp.innerHTML;
+
+  let i = 0;
+  let displayed = '';
+
+  function nextChar() {
+    if (i >= fullHtml.length) {
+      onDone();
+      return;
+    }
+
+    if (fullHtml[i] === '<') {
+      const end = fullHtml.indexOf('>', i);
+      displayed += fullHtml.slice(i, end + 1);
+      i = end + 1;
+    } else {
+      displayed += fullHtml[i];
+      i++;
+    }
+
+    div.innerHTML = displayed;
+    scrollBottom();
+
+    const jitter = speed * 0.35;
+    const delay = speed + (Math.random() * jitter * 2 - jitter);
+    setTimeout(nextChar, Math.max(1, delay));
+  }
+
+  nextChar();
+}
+
+function runNext() {
+  if (lineIndex >= lines.length) return;
+
+  const entry = lines[lineIndex++];
+
+  const go = () => {
+    if (entry.type === 'blank') {
+      addLine('&nbsp;');
+      scrollBottom();
+      runNext();
+    } else if (entry.type === 'hr') {
+      addHr();
+      scrollBottom();
+      runNext();
+    } else if (entry.type === 'instant') {
+      addLine(entry.html);
+      scrollBottom();
+      runNext();
+    } else if (entry.type === 'type') {
+      typeText(entry.html, entry.speed || 40, runNext);
+    }
+  };
+
+  entry.delay > 0 ? setTimeout(go, entry.delay) : go();
+}
+
+runNext();
+</script>
+</body>
+</html>
