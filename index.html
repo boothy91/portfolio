@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>boothy91</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #08080f;
+    --surface:  #0d0d1a;
+    --border:   #1a1a2e;
+    --border-hi:#2a2a4a;
+    --text:     #c8c8e0;
+    --muted:    #4a4a6a;
+    --cyan:     #00f5ff;
+    --pink:     #ff2d78;
+    --yellow:   #ffe600;
+    --purple:   #9b59ff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 500px; height: 500px; background: var(--cyan);   top: -150px; right: -100px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--pink);   bottom: 100px; left: -150px; }
+  .blob-3 { width: 300px; height: 300px; background: var(--purple); top: 40%; left: 40%; }
+
+  main { position: relative; z-index: 1; }
+
+  /* ── Header ── */
+  header {
+    padding: 72px 48px 56px;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+  }
+
+  h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(58px, 9vw, 110px);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 28px;
+  }
+
+  h1 .neon {
+    color: var(--cyan);
+    text-shadow: 0 0 30px var(--cyan), 0 0 8px var(--cyan);
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 420px;
+  }
+
+  .header-sub a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-hi);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .header-sub a:hover {
+    color: var(--cyan);
+    border-color: var(--cyan);
+  }
+
+  /* ── Grid ── */
+  .grid {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 48px 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    padding: 36px 38px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+    animation: rise 0.5s both;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.12s; }
+  .card:nth-child(3) { animation-delay: 0.19s; }
+  .card:nth-child(4) { animation-delay: 0.26s; }
+  .card:nth-child(5) { animation-delay: 0.33s; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:hover { background: #0f0f1f; }
+
+  /* Accent bar top */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent, transparent);
+    box-shadow: 0 0 12px var(--accent, transparent);
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  /* Hover corner arrow */
+  .card::after {
+    content: '↗';
+    position: absolute;
+    top: 22px; right: 26px;
+    font-size: 16px;
+    color: var(--accent, var(--muted));
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    transform: translate(-4px, 4px);
+  }
+
+  .card:hover::after {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  /* Featured spans both columns */
+  .card.featured {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 48px;
+  }
+
+  .card.featured .card-body { flex: 1; }
+
+  /* ── Card internals ── */
+  .card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+
+  .badge {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border: 1px solid var(--border-hi);
+    color: var(--muted);
+    border-radius: 2px;
+  }
+
+  .badge.accent {
+    border-color: var(--accent, var(--cyan));
+    color: var(--accent, var(--cyan));
+    text-shadow: 0 0 6px var(--accent, var(--cyan));
+  }
+
+  .badge.warn {
+    border-color: #3a2a10;
+    color: #7a5a20;
+  }
+
+  .badge.fork {
+    border-color: #1a1a2e;
+    color: #2a2a4a;
+  }
+
+  .card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .card.featured .card-title {
+    font-size: 48px;
+    color: #fff;
+    text-shadow: 0 0 40px rgba(255,255,255,0.1);
+  }
+
+  .card-desc {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+    flex: 1;
+  }
+
+  .card-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .pill {
+    font-size: 11px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border-hi);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 20px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent, var(--cyan));
+    text-shadow: 0 0 8px var(--accent, var(--cyan));
+    text-decoration: none;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent, var(--cyan));
+    box-shadow: 0 0 6px var(--accent, var(--cyan));
+    animation: pulse 2.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.65); }
+  }
+
+  .fork-note {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #252540;
+    letter-spacing: 0.06em;
+  }
+
+  /* Featured side panel */
+  .featured-side {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 6px;
+    min-width: 200px;
+  }
+
+  .stat {
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .stat-value {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent, var(--cyan));
+    text-shadow: 0 0 10px var(--accent, var(--cyan));
+  }
+
+  /* ── Per-card accent colours ── */
+  .card-cyan   { --accent: var(--cyan); }
+  .card-pink   { --accent: var(--pink); }
+  .card-yellow { --accent: var(--yellow); }
+  .card-purple { --accent: var(--purple); }
+  .card-muted  { --accent: #2a2a4a; }
+
+  /* ── Footer ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 36px 48px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  footer a { color: var(--cyan); text-decoration: none; }
+
+  /* ── Responsive ── */
+  @media (max-width: 680px) {
+    header { padding: 44px 22px 36px; }
+    .grid  { padding: 0 22px 60px; grid-template-columns: 1fr; }
+    .card.featured { flex-direction: column; gap: 24px; }
+    .featured-side { flex-direction: row; flex-wrap: wrap; }
+    h1 { font-size: 52px; }
+    .card { padding: 28px 22px; }
+    .card.featured .card-title { font-size: 36px; }
+    footer { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<main>
+  <header>
+    <p class="eyebrow">Open Source</p>
+    <h1>boothy<span class="neon">91</span></h1>
+    <p class="header-sub">
+      Android, Wear OS &amp; browser tools — mostly built for outdoor use.<br><br>
+      <a href="https://github.com/boothy91" target="_blank" rel="noopener">github.com/boothy91 ↗</a>
+    </p>
+  </header>
+
+  <div class="grid">
+
+    <!-- WristNav — featured -->
+    <a class="card featured card-cyan" href="https://boothy91.github.io/wrist-nav-site/" target="_blank" rel="noopener">
+      <div class="card-body">
+        <div class="card-badges">
+          <span class="badge accent">Featured</span>
+          <span class="badge">Wear OS</span>
+          <span class="badge">Android</span>
+          <span class="badge">Java</span>
+        </div>
+        <div class="card-title">WristNav</div>
+        <p class="card-desc">
+          Full Wear OS app for hiking, running and cycling. Offline OSM maps on your wrist,
+          GPX route navigation, GPS recording that keeps going when the screen sleeps,
+          live pace / HR / elevation, auto-pause, lap splits, Strava export.
+          Companion phone app to plan routes, push GPX to the watch and receive recorded tracks.
+        </p>
+        <div class="card-pills">
+          <span class="pill">Offline maps</span>
+          <span class="pill">GPX navigation</span>
+          <span class="pill">Heart rate</span>
+          <span class="pill">Strava export</span>
+          <span class="pill">Auto-pause</span>
+          <span class="pill">Lap splits</span>
+          <span class="pill">Phone companion</span>
+        </div>
+        <a class="card-link" href="https://boothy91.github.io/wrist-nav-site/" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+          <span class="live-dot"></span> App page &amp; download
+        </a>
+      </div>
+      <div class="featured-side">
+        <div class="stat">
+          <span class="stat-label">Platform</span>
+          <span class="stat-value">Wear OS</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Language</span>
+          <span class="stat-value">Java</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Install</span>
+          <span class="stat-value">Sideload</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Trail Planner -->
+    <a class="card card-pink" href="https://github.com/boothy91/gpx-map" target="_blank" rel="noopener">
+      <div class="card-badges">
+        <span class="badge accent">Live</span>
+        <span class="badge">Web</span>
+        <span class="badge">HTML</span>
+      </div>
+      <div class="card-title">Trail Planner</div>
+      <p class="card-desc">
+        Browser-based trail planning tool. Click to drop waypoints, get routed paths via
+        OpenRouteService, view an elevation profile, export as GPX or GeoJSON.
+        Single HTML file — no build step, no backend.
+      </p>
+      <div class="card-pills">
+        <span class="pill">Routing</span>
+        <span class="pill">Elevation profile</span>
+        <span class="pill">GPX export</span>
+      </div>
+      <a class="card-link" href="https://boothy91.github.io/gpx-map/" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+        <span class="live-dot"></span> Live app
+      </a>
+    </a>
+
+    <!-- FileViewer -->
+    <a class="card card-yellow" href="https://github.com/boothy91/FileViewer" target="_blank" rel="noopener">
+      <div class="card-badges">
+        <span class="badge accent">Live</span>
+        <span class="badge">Web</span>
+        <span class="badge">MIT</span>
+      </div>
+      <div class="card-title">File Viewer</div>
+      <p class="card-desc">
+        Universal browser-based file inspector supporting 500+ formats — images, video,
+        audio, PDF, XLSX, 3D models, GPX, archives, hex dump.
+        All processing is local; files never leave your device.
+      </p>
+      <div class="card-pills">
+        <span class="pill">500+ formats</span>
+        <span class="pill">3D models</span>
+        <span class="pill">Client-side only</span>
+      </div>
+      <a class="card-link" href="https://boothy91.github.io/FileViewer/" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+        <span class="live-dot"></span> Live app
+      </a>
+    </a>
+
+    <!-- HikingUtility -->
+    <a class="card card-purple" href="https://github.com/boothy91/HikingUtility" target="_blank" rel="noopener">
+      <div class="card-badges">
+        <span class="badge warn">Build required</span>
+        <span class="badge">Android</span>
+        <span class="badge">Java / Kotlin</span>
+      </div>
+      <div class="card-title">Hiking Utility</div>
+      <p class="card-desc">
+        Android phone app for hiking. Live GPS tracking with distance, time and pace.
+        Interactive maps via MapLibre and MapTiler, GPX import/export, offline map downloads.
+        Needs a MapTiler API key to build.
+      </p>
+      <div class="card-pills">
+        <span class="pill">MapLibre</span>
+        <span class="pill">GPX</span>
+        <span class="pill">Offline maps</span>
+      </div>
+    </a>
+
+    <!-- offlinemaps -->
+    <a class="card card-muted" href="https://github.com/boothy91/offlinemaps" target="_blank" rel="noopener">
+      <div class="card-badges">
+        <span class="badge fork">Fork</span>
+        <span class="badge">Wear OS</span>
+        <span class="badge">Java</span>
+      </div>
+      <div class="card-title">Offline Maps</div>
+      <p class="card-desc">
+        Wear OS offline maps app forked from miki151. Updated map colour scheme
+        and modified the GPX track import flow.
+      </p>
+      <p class="fork-note">// forked from miki151/offlinemaps</p>
+      <a class="card-link" href="https://github.com/boothy91/offlinemaps/raw/main/offlinemaps.apk" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="--accent:#3a3a6a; text-shadow:none;">
+        ↓ Download APK
+      </a>
+    </a>
+
+  </div>
+</main>
+
+<footer>
+  <p>© boothy91 — <a href="https://github.com/boothy91" target="_blank" rel="noopener">github.com/boothy91</a></p>
+</footer>
+
+</body>
+</html>
