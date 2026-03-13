@@ -29,6 +29,21 @@
   .header-sub { font-size:14px; color:var(--muted); line-height:1.7; max-width:420px; }
   .header-sub a { color:var(--text); text-decoration:none; border-bottom:1px solid var(--border-hi); padding-bottom:1px; transition:color 0.2s,border-color 0.2s; }
   .header-sub a:hover { color:var(--cyan); border-color:var(--cyan); }
+
+  /* TESTING BANNER */
+  .testing-banner {
+    max-width:980px; margin:0 auto 0; padding:0 48px 40px;
+  }
+  .testing-inner {
+    background:rgba(255,179,0,0.06); border:1px solid rgba(255,179,0,0.25);
+    border-radius:10px; padding:14px 20px;
+    font-size:13px; color:#FFD54F; line-height:1.6;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .testing-inner strong { font-size:14px; }
+  .testing-inner a { color:#00f5ff; font-weight:600; text-decoration:none; }
+  .testing-inner a:hover { text-decoration:underline; }
+
   .grid { max-width:980px; margin:0 auto; padding:0 48px 100px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .card { background:var(--surface); padding:36px 38px; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:0; position:relative; overflow:hidden; transition:background 0.25s; animation:rise 0.5s both; }
   .card:nth-child(1){animation-delay:0.05s} .card:nth-child(2){animation-delay:0.12s} .card:nth-child(3){animation-delay:0.19s} .card:nth-child(4){animation-delay:0.26s} .card:nth-child(5){animation-delay:0.33s}
@@ -43,6 +58,7 @@
   .card-badges { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:18px; }
   .badge { font-size:10px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; padding:3px 10px; border:1px solid var(--border-hi); color:var(--muted); border-radius:2px; }
   .badge.accent { border-color:var(--accent,var(--cyan)); color:var(--accent,var(--cyan)); text-shadow:0 0 6px var(--accent,var(--cyan)); }
+  .badge.testing { border-color:rgba(255,179,0,0.4); color:#FFB300; }
   .card-title { font-family:'Rajdhani',sans-serif; font-size:32px; font-weight:700; line-height:1; letter-spacing:-0.01em; color:#fff; margin-bottom:12px; }
   .card.featured .card-title { font-size:48px; }
   .card-desc { font-size:13px; line-height:1.75; color:var(--muted); flex:1; }
@@ -53,12 +69,16 @@
   .card-link:hover { background:rgba(0,245,255,0.08); }
   .card-link.secondary { color:var(--muted); text-shadow:none; border-color:var(--border-hi); }
   .card-link.secondary:hover { color:var(--text); background:var(--border); }
+  .card-link.reddit { color:#FF4500; text-shadow:0 0 8px rgba(255,69,0,0.5); border-color:rgba(255,69,0,0.3); }
+  .card-link.reddit:hover { background:rgba(255,69,0,0.08); }
   .live-dot { width:6px;height:6px; border-radius:50%; background:var(--accent,var(--cyan)); box-shadow:0 0 6px var(--accent,var(--cyan)); animation:pulse 2.4s ease-in-out infinite; flex-shrink:0; }
+  .amber-dot { width:6px;height:6px; border-radius:50%; background:#FFB300; box-shadow:0 0 6px #FFB300; animation:pulse 2.4s ease-in-out infinite; flex-shrink:0; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.65)} }
   .featured-side { display:flex; flex-direction:column; gap:10px; padding-top:6px; min-width:200px; }
   .stat { border:1px solid var(--border); padding:14px 18px; display:flex; flex-direction:column; gap:4px; }
   .stat-label { font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
   .stat-value { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:var(--accent,var(--cyan)); text-shadow:0 0 10px var(--accent,var(--cyan)); }
+  .stat-value.amber { color:#FFB300; text-shadow:0 0 10px rgba(255,179,0,0.5); }
   .card-cyan   { --accent:var(--cyan); }
   .card-pink   { --accent:var(--pink); }
   .card-yellow { --accent:var(--yellow); }
@@ -69,6 +89,7 @@
     header{padding:44px 22px 36px} .grid{padding:0 22px 60px;grid-template-columns:1fr}
     .card.featured{flex-direction:column;gap:24px} .featured-side{flex-direction:row;flex-wrap:wrap}
     h1{font-size:52px} .card{padding:28px 22px} .card.featured .card-title{font-size:36px} footer{padding:28px 22px}
+    .testing-banner{padding:0 22px 32px;}
   }
 </style>
 </head>
@@ -86,6 +107,17 @@
     </p>
   </header>
 
+  <div class="testing-banner">
+    <div class="testing-inner">
+      <span>🔒</span>
+      <div>
+        <strong>WristNav &amp; PhoneNav are currently in closed testing on the Play Store.</strong>
+        DM me on Reddit for access and install links —
+        <a href="https://www.reddit.com/u/Due-Sand7582" target="_blank" rel="noopener">reddit.com/u/Due-Sand7582 ↗</a>
+      </div>
+    </div>
+  </div>
+
   <div class="grid">
 
     <!-- WristNav — featured -->
@@ -93,6 +125,7 @@
       <div class="card-body">
         <div class="card-badges">
           <span class="badge accent">Featured</span>
+          <span class="badge testing">Closed Testing</span>
           <span class="badge">Wear OS</span>
           <span class="badge">Android</span>
           <span class="badge">Java</span>
@@ -101,36 +134,34 @@
         <p class="card-desc">
           Full Wear OS app for hiking, running and cycling. Offline OSM maps on your wrist,
           GPX route navigation, GPS recording that keeps going when the screen sleeps,
-          live pace / HR / elevation, auto-pause, lap splits, Strava export.
-          Companion phone app to plan routes, push GPX to the watch and receive recorded tracks.
+          live pace, heart rate, steps and elevation, lap splits, and Strava export via the
+          companion phone app. Plan routes on your phone and push them straight to the watch.
         </p>
         <div class="card-pills">
           <span class="pill">Offline maps</span>
           <span class="pill">GPX navigation</span>
           <span class="pill">Heart rate</span>
           <span class="pill">Strava export</span>
-          <span class="pill">Auto-pause</span>
           <span class="pill">Lap splits</span>
           <span class="pill">Phone companion</span>
         </div>
         <div class="card-links">
           <a class="card-link" href="https://boothy91.github.io/wrist-nav-site/" target="_blank" rel="noopener"><span class="live-dot"></span> Visit Site</a>
-          <a class="card-link" href="https://github.com/boothy91/wrist-nav-site/raw/main/WristNav-Watch-Release.apk">⌚ Watch APK</a>
-          <a class="card-link secondary" href="https://github.com/boothy91/wrist-nav-site/raw/main/WristNav-Phone-Release.apk">📱 Phone APK</a>
           <a class="card-link secondary" href="https://boothy91.github.io/wrist-nav-maps/" target="_blank" rel="noopener">🗺 Maps</a>
+          <a class="card-link reddit" href="https://www.reddit.com/u/Due-Sand7582" target="_blank" rel="noopener">💬 DM for Access</a>
         </div>
       </div>
       <div class="featured-side">
         <div class="stat"><span class="stat-label">Platform</span><span class="stat-value">Wear OS</span></div>
         <div class="stat"><span class="stat-label">Language</span><span class="stat-value">Java</span></div>
-        <div class="stat"><span class="stat-label">Install</span><span class="stat-value">Sideload</span></div>
+        <div class="stat"><span class="stat-label">Status</span><span class="stat-value amber">Testing</span></div>
       </div>
     </div>
 
     <!-- PhoneNav -->
     <div class="card card-cyan">
       <div class="card-badges">
-        <span class="badge accent">Live</span>
+        <span class="badge testing">Closed Testing</span>
         <span class="badge">Android</span>
         <span class="badge">Java</span>
       </div>
@@ -147,11 +178,31 @@
         <span class="pill">Activity recording</span>
       </div>
       <div class="card-links">
-        <a class="card-link" href="https://boothy91.github.io/phonenav-site/" target="_blank" rel="noopener"><span class="live-dot"></span> Visit Site</a>
-        <a class="card-link secondary" href="https://github.com/boothy91/phonenav-site/raw/main/PhoneNav.apk">⬇ Download APK</a>
+        <a class="card-link" href="https://boothy91.github.io/phonenav-site/" target="_blank" rel="noopener"><span class="amber-dot"></span> Visit Site</a>
         <a class="card-link secondary" href="https://boothy91.github.io/wrist-nav-maps/" target="_blank" rel="noopener">🗺 Maps</a>
+        <a class="card-link reddit" href="https://www.reddit.com/u/Due-Sand7582" target="_blank" rel="noopener">💬 DM for Access</a>
       </div>
     </div>
+
+    <!-- Map Builder -->
+    <a class="card card-cyan" href="https://boothy91.github.io/wrist-nav-maps/" target="_blank" rel="noopener">
+      <div class="card-badges">
+        <span class="badge accent">In Progress</span>
+        <span class="badge">OpenStreetMap</span>
+        <span class="badge">Mapsforge</span>
+      </div>
+      <div class="card-title">Map Builder</div>
+      <p class="card-desc">
+        Automated pipeline that converts OpenStreetMap data into offline Mapsforge map files
+        for WristNav and PhoneNav. Covers most of the world — 5 regions still processing.
+      </p>
+      <div class="card-pills">
+        <span class="pill">OSM data</span>
+        <span class="pill">Mapsforge</span>
+        <span class="pill">GitHub Actions</span>
+        <span class="pill">5 regions remaining</span>
+      </div>
+    </a>
 
     <!-- Trail Planner -->
     <a class="card card-pink" href="https://boothy91.github.io/gpx-map/" target="_blank" rel="noopener">
@@ -162,7 +213,7 @@
       </div>
       <div class="card-title">Trail Planner</div>
       <p class="card-desc">
-        Browser-based trail planning tool. Click to drop waypoints, get routed paths via
+        Browser-based trail planning tool. Drop waypoints, get routed paths via
         OpenRouteService, view an elevation profile, export as GPX or GeoJSON.
         Single HTML file — no build step, no backend.
       </p>
@@ -170,6 +221,7 @@
         <span class="pill">Routing</span>
         <span class="pill">Elevation profile</span>
         <span class="pill">GPX export</span>
+        <span class="pill">Hiking · Cycling · Car</span>
       </div>
     </a>
 
@@ -217,7 +269,7 @@
 </main>
 
 <footer>
-  <p>© boothy91 — <a href="https://github.com/boothy91" target="_blank" rel="noopener">github.com/boothy91</a></p>
+  <p>© boothy91 — <a href="https://github.com/boothy91" target="_blank" rel="noopener">github.com/boothy91</a> &nbsp;·&nbsp; <a href="https://www.reddit.com/u/Due-Sand7582" target="_blank" rel="noopener">Reddit</a></p>
 </footer>
 </body>
 </html>
